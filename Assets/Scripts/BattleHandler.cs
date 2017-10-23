@@ -20,6 +20,7 @@ public class BattleHandler : MonoBehaviour {
     private EnemyEntity[] enemies;
     private PlayerEntity[] partyMembers;
 
+
     // Use this for initialization
     void Start () {
         phase = 0;
@@ -34,8 +35,8 @@ public class BattleHandler : MonoBehaviour {
             {
                 /**************This needs to be fixed later to appropriatly space players*******************/
                 //  formula will be ((i + 1)*(screen.width/players.length))-(screen.width/2) 
-                //  not sure how to get screen size in the unity units to properly translate though
-                partyMembers[i] = Instantiate(state.PartyMember(i), new Vector2(-5 + 3.334f * i, -1.3f), Quaternion.identity);
+                //  not sure how to get screen size in the unity units to properly translate though so for now its 16 units because thats what my unity displays
+                partyMembers[i] = Instantiate(state.PartyMember(i), new Vector2(((i + 1) * (16 / (state.PartySize + 1))) - (16 / 2), -1.3f), Quaternion.identity);
                 if(state.PartyMember(i).Stats.IsAlive == true && activeMember == -1)//If its the first alive member set to active
                 {
                     activeMember = i;
@@ -53,7 +54,7 @@ public class BattleHandler : MonoBehaviour {
             {
                 /**************This needs to be fixed later to appropriatly space enemies*******************/
                 // same formula as above
-                enemies[i] = Instantiate(state.EnemyMember(i), new Vector2(-5 + 3.334f * i, -1.3f), Quaternion.identity);
+                enemies[i] = Instantiate(state.EnemyMember(i), new Vector2(((i + 1) * (16 / (state.EnemySize + 1))) - (16 / 2), 3.3f), Quaternion.identity);
             } else
             {
                 Debug.LogWarning("Tried to instantiate null enemy member at index: " + i);
@@ -62,49 +63,144 @@ public class BattleHandler : MonoBehaviour {
         phase = 1;
     }
 
+
     // Update is called once per frame
     void Update () {
         PhaseSelector();
     }
+    public PlayerEntity GetPlayer(int position)
+    {
+        return partyMembers[position];
+    }
+    
 
     private void PhaseSelector()
     {
-        if(phase == 0)//Initialization Phase
+        //Initialization Phase
+        if(phase == 0)
         {
             Debug.LogWarning("Phase is still initialization");//Shouldnt be in init phase after start
-        } else if(phase == 1)//Entry Phase
+        }
+        //Entry Phase
+        else if(phase == 1)
         {
-        //  play intro animation
-        //  play player and enemie animations
-        //  Ui style toPassive(intro text)
-        //  istextscrolled?
-        //      make ui to selector style
-        //      go to player phase
-        } else if(phase == 2)//Player Phase
+            //  play intro animation
+            //  play player and enemie animations
+            //  Ui style toPassive(intro text)
+            //  istextscrolled?
+            //      currentuidestroy
+            //      go to player phase
+            phase = 2;
+        }
+        //Player Phase
+        else if(phase == 2)
         {//Allow player to pick their interaction
-        //  send inputs to ui
-        //  listen for action return
-        //  if action(returned 1)
-        //      ui is gonna call a public stack function in battle to stack action
-        //      next member
-        //      ui update selected
-        //  if back(-1)
-        //      pop last action
-        //      go to last member
-        //      ui update selected
-        } else if(phase == 3)//Enemy Phase
+            if(!_uIHandler.UIHasObject)
+            {
+                partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+                _uIHandler.CreateUI(partyMembers[activeMember]);
+            }
+        }
+        //Enemy Phase
+        else if(phase == 3)
         {//Determine enemy action
-        //  call enemy action
-        //      calls that battle stack function
-        } else if(phase == 4)//Action Process Phase
+            for(int i = 0; i < enemies.Length; i++)
+            {
+                _actionHandler.Push(enemies[i], enemies[i].Think(), partyMembers[enemies[i].Target(partyMembers.Length)]);
+            }
+            _actionHandler.Print();
+            phase = 4;
+         //  call enemy action
+         //      calls that battle stack function
+        }
+        //Action Process Phase
+        else if(phase == 4)
         {//Sort and process actions
-
-        } else if(phase == 5)//End Phase
+            _actionHandler.Fight();
+            for(int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i].Action();
+                
+            }
+            for(int i = 0; i < partyMembers.Length; i++)
+            {
+                partyMembers[i].Action();
+                
+            }
+            Debug.Log(enemies[0].Stats.Health);
+            phase = 5;
+        }
+        //End Phase
+        else if(phase == 5)
         {//Determines next game state. Win and lose condition, or restart.
-
-        } else
+            phase = 2;
+        }
+        else
         {
             Debug.LogWarning("Unrecognized phase");
         }
     }
+
+    public void PassInput(string input) {
+        switch(phase)
+        {
+            case 1:
+            case 2:
+                _uIHandler.PassInput(input);
+                break;
+        }
+    }
+
+
+
+    public void Select(int target, string action) {
+        //stack action
+        if(target < enemies.Length)
+        {
+            _actionHandler.Push(partyMembers[activeMember], action, enemies[target]);
+        } else
+        {
+            _actionHandler.Push(partyMembers[activeMember], action, partyMembers[target-enemies.Length]);
+        }
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
+        if(!NextMember())
+        {
+            phase = 3;
+        }
+    }
+
+
+
+    public void PreviousMember()
+    {
+        _actionHandler.Pop();
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
+        for(int i = activeMember-1; i >= 0; i--)
+        {
+            if(partyMembers[i] != null)
+            {
+                if(partyMembers[i].Stats.IsAlive == true)
+                {
+                    activeMember = i;
+                    break;
+                }
+            }
+        }
+    }
+    public bool NextMember()
+    {
+        for(int i = 0; i < partyMembers.Length; i++)
+        {
+            if(partyMembers[i] != null)
+            {
+                if(partyMembers[i].Stats.IsAlive == true && activeMember < i)
+                {
+                    activeMember = i;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
