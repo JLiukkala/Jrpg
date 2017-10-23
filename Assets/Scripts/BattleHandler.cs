@@ -133,6 +133,7 @@ public class BattleHandler : MonoBehaviour {
         //End Phase
         else if(phase == 5)
         {//Determines next game state. Win and lose condition, or restart.
+            FirstMember();
             phase = 2;
         }
         else
@@ -162,7 +163,6 @@ public class BattleHandler : MonoBehaviour {
         {
             _actionHandler.Push(partyMembers[activeMember], action, partyMembers[target-enemies.Length]);
         }
-        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
         if(!NextMember())
         {
             phase = 3;
@@ -182,18 +182,40 @@ public class BattleHandler : MonoBehaviour {
                 if(partyMembers[i].Stats.IsAlive == true)
                 {
                     activeMember = i;
+                    
                     break;
                 }
             }
         }
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
     }
     public bool NextMember()
     {
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
         for(int i = 0; i < partyMembers.Length; i++)
         {
             if(partyMembers[i] != null)
             {
                 if(partyMembers[i].Stats.IsAlive == true && activeMember < i)
+                {
+                    activeMember = i;
+                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+                    return true;
+                }
+            }
+        }
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+        return false;
+    }
+    public bool FirstMember()
+    {
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
+        for(int i = 0; i <partyMembers.Length; i++)
+        {
+
+            if(partyMembers[i] != null)
+            {
+                if(partyMembers[i].Stats.IsAlive == true)
                 {
                     activeMember = i;
                     return true;
@@ -202,5 +224,4 @@ public class BattleHandler : MonoBehaviour {
         }
         return false;
     }
-
 }

@@ -17,6 +17,9 @@ public class StatsObject : MonoBehaviour {
     [SerializeField, Tooltip("Attack and its per level growth")]
     private int _attack = 20, _attackMultiplier = 1;
     private int _attackModifier;
+    [SerializeField, Tooltip("Attack and its per level growth")]
+    private int _magicAttack = 20, _magicAttackMultiplier = 1;
+    private int _magicAttackModifier;
     [SerializeField, Tooltip("Defense and its per level growth")]
     private int _defense = 20, _defenseMultiplier = 1;
     private int _defenseModifier;
