@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StatsObject : MonoBehaviour {
 
@@ -26,10 +27,15 @@ public class StatsObject : MonoBehaviour {
     [SerializeField, Tooltip("Speed and its per level growth")]
     private int _speed = 20, _speedMultiplier = 1;
     private int _speedModifier;
+    [SerializeField, Tooltip("Speed and its per level growth")]
+    private Text healthtext;
 
     List<StatusObject> effects = new List<StatusObject>();
 
-
+    private void Start()
+    {
+        healthtext.text = Health.ToString();
+    }
 
     public void Process() {
         for(int i = 0; i < effects.Count;)
@@ -42,9 +48,11 @@ public class StatsObject : MonoBehaviour {
                 case "Heal":
                     Health = -effects[i].Value;
                     break;
+                
                 default:
                     break;
             }
+            healthtext.text = Health.ToString();
             effects[i].Length -= 1;
             if(effects[i].Length == 0)
             {
@@ -78,6 +86,18 @@ public class StatsObject : MonoBehaviour {
             }
         }
     }
+    public bool IsActive
+    {
+        get {
+            if(Health > 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+    }
 
     public StatusObject Effects
     {
@@ -95,6 +115,10 @@ public class StatsObject : MonoBehaviour {
 
         private set {
             Mathf.Clamp(_healthModifier += value, 0, MaxHealth);
+            if(Health == 0)
+            {
+
+            }
         }
     }
     public int MaxHealth {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class BattleHandler : MonoBehaviour {
 
     
@@ -40,6 +40,7 @@ public class BattleHandler : MonoBehaviour {
                 if(state.PartyMember(i).Stats.IsAlive == true && activeMember == -1)//If its the first alive member set to active
                 {
                     activeMember = i;
+                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
                 }
             } else
             {
@@ -97,7 +98,7 @@ public class BattleHandler : MonoBehaviour {
         {//Allow player to pick their interaction
             if(!_uIHandler.UIHasObject)
             {
-                partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+                
                 _uIHandler.CreateUI(partyMembers[activeMember]);
             }
         }
@@ -133,8 +134,18 @@ public class BattleHandler : MonoBehaviour {
         //End Phase
         else if(phase == 5)
         {//Determines next game state. Win and lose condition, or restart.
-            FirstMember();
-            phase = 2;
+            if(FirstMember())
+            {
+                
+
+                phase = 2;
+
+            } else
+            {
+                SceneManager.LoadScene("endscene");
+            }
+            
+            
         }
         else
         {
@@ -218,6 +229,7 @@ public class BattleHandler : MonoBehaviour {
                 if(partyMembers[i].Stats.IsAlive == true)
                 {
                     activeMember = i;
+                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
                     return true;
                 }
             }
