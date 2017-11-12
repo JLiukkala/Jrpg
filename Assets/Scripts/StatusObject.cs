@@ -14,6 +14,8 @@ public class StatusObject : MonoBehaviour {
     private int _durationMargin = 1;
     [SerializeField, Tooltip("Value specific to effect")]
     private float _value = 1;
+    [SerializeField, Tooltip("Determines if it is percent or actual value margin")]
+    private bool _isPercent = false;
     [SerializeField, Tooltip("Amount above and below value that it could possibly be")]
     private float _valueMargin = 1;
     [SerializeField, Tooltip("Amount above and below value that it could possibly be")]
@@ -57,7 +59,14 @@ public class StatusObject : MonoBehaviour {
     public float Value
     {
         get {
-            return _value + Random.Range(-_valueMargin, _valueMargin);
+            if(_isPercent)
+            {
+                return _value + _value * Random.Range(-_valueMargin, _valueMargin);
+            } else
+            {
+                return _value + Random.Range(-_valueMargin, _valueMargin);
+            }
+            
         }
     }
 
