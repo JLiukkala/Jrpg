@@ -69,11 +69,21 @@ public class BattleHandler : MonoBehaviour {
     void Update () {
         PhaseSelector();
     }
+
+    public PlayerEntity GetPlayer()
+    {
+        return partyMembers[activeMember];
+    }
     public PlayerEntity GetPlayer(int position)
     {
         return partyMembers[position];
     }
-    
+    public int EnemyCount() {
+        return enemies.Length;
+    }
+    public int PlayerCount() {
+        return partyMembers.Length;
+    }
 
     private void PhaseSelector()
     {
@@ -109,34 +119,40 @@ public class BattleHandler : MonoBehaviour {
             {
                 _actionHandler.Push(enemies[i], enemies[i].Think(), partyMembers[enemies[i].Target(partyMembers.Length)]);
             }
-            _actionHandler.Print();
+            //sort actions
             phase = 4;
          //  call enemy action
          //      calls that battle stack function
         }
         //Action Process Phase
         else if(phase == 4)
-        {//Sort and process actions
+        {//process actions
             _actionHandler.Fight();
-            for(int i = 0; i < enemies.Length; i++)
+            //for(int i = 0; i < enemies.Length; i++)
+            //{
+            //    enemies[i].Action();
+
+            //}
+            //for(int i = 0; i < partyMembers.Length; i++)
+            //{
+            //    partyMembers[i].Action();
+
+            //}
+            if(_actionHandler.ActionLength()<1)
             {
-                enemies[i].Action();
-                
+                phase = 5;
             }
-            for(int i = 0; i < partyMembers.Length; i++)
-            {
-                partyMembers[i].Action();
-                
-            }
-            Debug.Log(enemies[0].Stats.Health);
-            phase = 5;
+            
         }
         //End Phase
         else if(phase == 5)
         {//Determines next game state. Win and lose condition, or restart.
             if(FirstMember())
             {
-                
+                if(!enemies[0].Stats.IsAlive)
+                {
+                    SceneManager.LoadScene("win");
+                }
 
                 phase = 2;
 
@@ -215,12 +231,12 @@ public class BattleHandler : MonoBehaviour {
                 }
             }
         }
-        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+        //partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
         return false;
     }
     public bool FirstMember()
     {
-        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
+        //partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
         for(int i = 0; i <partyMembers.Length; i++)
         {
 

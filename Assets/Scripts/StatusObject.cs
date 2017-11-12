@@ -13,11 +13,26 @@ public class StatusObject : MonoBehaviour {
     [SerializeField, Tooltip("Margin around duration")]
     private int _durationMargin = 1;
     [SerializeField, Tooltip("Value specific to effect")]
-    private int _value = 1;
+    private float _value = 1;
     [SerializeField, Tooltip("Amount above and below value that it could possibly be")]
-    private int _valueMargin = 1;
+    private float _valueMargin = 1;
+    [SerializeField, Tooltip("Amount above and below value that it could possibly be")]
+    private StatsObject _masterStats;
+    [SerializeField, Tooltip("Amount above and below value that it could possibly be")]
+    private bool _instantCalculate = false;
+    
+
+    private int attack;
+    private int intelligence;
 
     private int ThisDuration;
+
+    public void Setup()
+    {
+        Attack = _masterStats.CurrentAttack;
+        Debug.Log("Attack set to: "+ _masterStats.CurrentAttack);
+        Intelligence = _masterStats.CurrentIntelligence;
+    }
 
     public void RollDuration() {
         ThisDuration = _duration + Random.Range(-_durationMargin, _durationMargin);
@@ -39,11 +54,39 @@ public class StatusObject : MonoBehaviour {
         }
     }
 
-    public int Value
+    public float Value
     {
         get {
-            return _value + Random.Range(-_valueMargin, _valueMargin + 1);
+            return _value + Random.Range(-_valueMargin, _valueMargin);
         }
     }
 
+    public bool InstantCalculate
+    {
+        get {
+            return _instantCalculate;
+        }
+    }
+
+    public int Attack
+    {
+        get {
+            return attack;
+        }
+
+        private set {
+            attack = value;
+        }
+    }
+
+    public int Intelligence
+    {
+        get {
+            return intelligence;
+        }
+
+        private set {
+            intelligence = value;
+        }
+    }
 }
