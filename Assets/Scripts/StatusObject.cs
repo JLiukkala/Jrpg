@@ -7,7 +7,7 @@ public class StatusObject : MonoBehaviour {
     static string[] EffectsList = new string[] {"Damage", "Heal" };
 
     [SerializeField, Tooltip("Which effect will be used")]
-    private string _effect;
+    private StatusOptions _effect;
     [SerializeField, Tooltip("Number of turns effect will be active")]
     private int _duration = 1;
     [SerializeField, Tooltip("Margin around duration")]
@@ -37,7 +37,7 @@ public class StatusObject : MonoBehaviour {
     public void RollDuration() {
         ThisDuration = _duration + Random.Range(-_durationMargin, _durationMargin);
     }
-    public string Effect
+    public StatusOptions Effect
     {
         get {
             return _effect;

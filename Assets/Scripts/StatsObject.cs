@@ -70,30 +70,30 @@ public class StatsObject : MonoBehaviour {
     }
     public void Process(StatusObject effect)
     {
-        switch(effect.Effect.ToLower())
+        switch(effect.Effect)
         {
-            case "attack":
+            case StatusOptions.Attack:
                 Health = (int)(effect.Attack * effect.Value);
                 break;
-            case "damage":
+            case StatusOptions.Damage:
                 Health = (int)(effect.Value);
                 break;
-            case "heal":
+            case StatusOptions.Heal:
                 Health = -(int)(effect.Value);
                 break;
-            case "mattack":
+            case StatusOptions.ModifyAttack:
                 _currentAttack += (int)(effect.Value*_attack);
                 break;
-            case "mdefense":
+            case StatusOptions.ModifyDefense:
                 _currentDefense += (int)(effect.Value * _defense);
                 break;
-            case "mspeed":
+            case StatusOptions.ModifySpeed:
                 _currentSpeed += (int)(effect.Value * _speed);
                 break;
-            case "mintelligence":
+            case StatusOptions.ModifyIntelligence:
                 _currentIntelligence += (int)(effect.Value * _intelligence);
                 break;
-            case "mmagicresist":
+            case StatusOptions.ModifyMagicResist:
                 _currentMagicResist += (int)(effect.Value * _magicResist);
                 break;
             default:
