@@ -1,20 +1,20 @@
 ﻿public class ActionObject
 {
 
-    private int origin;
+    private BattleEntity origin;
     private string action;
-    private int target;
+    private BattleEntity target;
 
     public ActionObject() { }
 
-    public ActionObject(int originIn, string actionIn, int targetIn)
+    public ActionObject(BattleEntity originIn, string actionIn, BattleEntity targetIn)
     {
         origin = originIn;
         action = actionIn;
         target = targetIn;
     }
 
-    public int Origin
+    public BattleEntity Origin
     {
         get {
             return origin;
@@ -36,7 +36,7 @@
         }
     }
 
-    public int Target
+    public BattleEntity Target
     {
         get {
             return target;

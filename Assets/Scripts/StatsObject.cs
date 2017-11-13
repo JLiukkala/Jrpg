@@ -24,7 +24,7 @@ public class StatsObject : MonoBehaviour {
     private int _speed = 20, _speedMultiplier = 1;
     private int _speedModifier;
 
-    List<StatusObject> effects;
+    List<StatusObject> effects = new List<StatusObject>();
 
 
 
@@ -114,6 +114,12 @@ public class StatsObject : MonoBehaviour {
     {
         get {
             return _special * _specialMultiplier;
+        }
+    }
+    public int Speed
+    {
+        get {
+            return _speed + (int)(_speedMultiplier * _level);
         }
     }
 }
