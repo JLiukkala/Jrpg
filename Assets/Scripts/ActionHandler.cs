@@ -71,6 +71,7 @@ public class ActionHandler : MonoBehaviour {
             starttime = Time.time;
             pos = obj.Origin.transform.position;
             obj.Origin.transform.position = obj.Target.transform.position;
+            obj.Origin.Stats.Special = obj.Origin.FindAbility(obj.Action).Cost;
             for(int j = 0; j < obj.Origin.FindAbility(obj.Action).Effects.Length; j++)
             {
 

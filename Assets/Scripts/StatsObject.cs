@@ -32,24 +32,27 @@ public class StatsObject : MonoBehaviour {
     [SerializeField, Tooltip("magic effectiveness and its per level growth")]
     private int _intelligence = 20, _intelligenceGrowth = 1;
     private int _currentIntelligence;
-    [SerializeField, Tooltip("magic effectiveness and its per level growth")]
+    [SerializeField, Tooltip("magic resist and its per level growth")]
     private int _magicResist = 20, _magicResistGrowth = 1;
     private int _currentMagicResist;
 
-    [SerializeField, Tooltip("Speed and its per level growth")]
-    private Text healthtext;
+    [SerializeField, Tooltip("Health text")]
+    private Text _healthText;
+    [SerializeField, Tooltip("mana text")]
+    private Text _manaText;
 
     List<StatusObject> effects = new List<StatusObject>();
 
     private void Start()
     {
-        healthtext.text = Health.ToString();
-        
-        float x = ((transform.parent.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect) * healthtext.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize* 2);
-        float y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1f) * healthtext.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
-        Debug.Log(x);
-        Debug.Log(y);
-        healthtext.transform.position = new Vector3(x,y,0);
+        _healthText.text = Health.ToString();
+        _manaText.text = Special.ToString();
+        float x = ((transform.parent.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect-.5f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize* 2);
+        float y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        _healthText.transform.position = new Vector3(x,y,0);
+        x = ((transform.parent.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect + .5f) * _manaText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1f) * _manaText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        _manaText.transform.position = new Vector3(x, y, 0);
     }
 
     public void Process() {
@@ -99,8 +102,9 @@ public class StatsObject : MonoBehaviour {
             default:
                 break;
         }
-        healthtext.text = Health.ToString();
-        
+        _healthText.text = Health.ToString();
+        _manaText.text = Special.ToString();
+
     }
 
     private void ResetCurrents()
@@ -174,7 +178,7 @@ public class StatsObject : MonoBehaviour {
     }
     public int MaxHealth {
         get {
-            return _health * _healthGrowth;
+            return _health + Level * _healthGrowth;
         }
     }
 
@@ -184,14 +188,14 @@ public class StatsObject : MonoBehaviour {
             return _special * _specialGrowth - _currentSpecial;
         }
 
-        private set {
-            Mathf.Clamp(_currentSpecial += value, 0, MaxSpecial);
+        set {
+            _currentSpecial = Mathf.Clamp(_currentSpecial + value, 0, MaxSpecial);
         }
     }
     public int MaxSpecial
     {
         get {
-            return _special * _specialGrowth;
+            return _special + Level * _specialGrowth;
         }
     }
 

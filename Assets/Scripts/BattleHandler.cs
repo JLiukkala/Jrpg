@@ -183,6 +183,7 @@ public class BattleHandler : MonoBehaviour {
 
     public void Select(int target, string action) {
         //stack action
+        
         if(target < enemies.Length)
         {
             _actionHandler.Push(partyMembers[activeMember], action, enemies[target]);
