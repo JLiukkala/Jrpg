@@ -16,7 +16,14 @@ public class AbilityObject : MonoBehaviour {
     private int _speed = 0;
     [SerializeField, Tooltip("Accuracy of ability"), Range(0, 100)]
     private int _accuracy = 100;
-
+    [SerializeField, Tooltip("Wether or not to attack all enemies")]
+    private bool _areaOfEffect = false;
+    [SerializeField, Tooltip("Randomly decide target")]
+    private bool _isRandom = false;
+    [SerializeField, Tooltip("For random targets how many")]
+    private int _targets = 1;
+    [SerializeField, Tooltip("For aoe wich side to target")]
+    private bool _targetEnemy = true;
     public string Name
     {
         get {
@@ -56,6 +63,34 @@ public class AbilityObject : MonoBehaviour {
     {
         get {
             return _accuracy;
+        }
+    }
+
+    public bool AreaOfEffect
+    {
+        get {
+            return _areaOfEffect;
+        }
+    }
+
+    public bool TargetEnemy
+    {
+        get {
+            return _targetEnemy;
+        }
+    }
+
+    public bool IsRandom
+    {
+        get {
+            return _isRandom;
+        }
+    }
+
+    public int Targets
+    {
+        get {
+            return _targets;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class BattleHandler : MonoBehaviour {
 
     
@@ -40,6 +40,7 @@ public class BattleHandler : MonoBehaviour {
                 if(state.PartyMember(i).Stats.IsAlive == true && activeMember == -1)//If its the first alive member set to active
                 {
                     activeMember = i;
+                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
                 }
             } else
             {
@@ -68,11 +69,21 @@ public class BattleHandler : MonoBehaviour {
     void Update () {
         PhaseSelector();
     }
+
+    public PlayerEntity GetPlayer()
+    {
+        return partyMembers[activeMember];
+    }
     public PlayerEntity GetPlayer(int position)
     {
         return partyMembers[position];
     }
-    
+    public int EnemyCount() {
+        return enemies.Length;
+    }
+    public int PlayerCount() {
+        return partyMembers.Length;
+    }
 
     private void PhaseSelector()
     {
@@ -97,7 +108,7 @@ public class BattleHandler : MonoBehaviour {
         {//Allow player to pick their interaction
             if(!_uIHandler.UIHasObject)
             {
-                partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+                
                 _uIHandler.CreateUI(partyMembers[activeMember]);
             }
         }
@@ -108,32 +119,49 @@ public class BattleHandler : MonoBehaviour {
             {
                 _actionHandler.Push(enemies[i], enemies[i].Think(), partyMembers[enemies[i].Target(partyMembers.Length)]);
             }
-            _actionHandler.Print();
+            //sort actions
             phase = 4;
          //  call enemy action
          //      calls that battle stack function
         }
         //Action Process Phase
         else if(phase == 4)
-        {//Sort and process actions
+        {//process actions
             _actionHandler.Fight();
-            for(int i = 0; i < enemies.Length; i++)
+            //for(int i = 0; i < enemies.Length; i++)
+            //{
+            //    enemies[i].Action();
+
+            //}
+            //for(int i = 0; i < partyMembers.Length; i++)
+            //{
+            //    partyMembers[i].Action();
+
+            //}
+            if(_actionHandler.ActionLength()<1)
             {
-                enemies[i].Action();
-                
+                phase = 5;
             }
-            for(int i = 0; i < partyMembers.Length; i++)
-            {
-                partyMembers[i].Action();
-                
-            }
-            Debug.Log(enemies[0].Stats.Health);
-            phase = 5;
+            
         }
         //End Phase
         else if(phase == 5)
         {//Determines next game state. Win and lose condition, or restart.
-            phase = 2;
+            if(FirstMember())
+            {
+                if(!enemies[0].Stats.IsAlive)
+                {
+                    SceneManager.LoadScene("win");
+                }
+
+                phase = 2;
+
+            } else
+            {
+                SceneManager.LoadScene("endscene");
+            }
+            
+            
         }
         else
         {
@@ -155,6 +183,7 @@ public class BattleHandler : MonoBehaviour {
 
     public void Select(int target, string action) {
         //stack action
+        
         if(target < enemies.Length)
         {
             _actionHandler.Push(partyMembers[activeMember], action, enemies[target]);
@@ -162,7 +191,6 @@ public class BattleHandler : MonoBehaviour {
         {
             _actionHandler.Push(partyMembers[activeMember], action, partyMembers[target-enemies.Length]);
         }
-        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
         if(!NextMember())
         {
             phase = 3;
@@ -182,13 +210,16 @@ public class BattleHandler : MonoBehaviour {
                 if(partyMembers[i].Stats.IsAlive == true)
                 {
                     activeMember = i;
+                    
                     break;
                 }
             }
         }
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
     }
     public bool NextMember()
     {
+        partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
         for(int i = 0; i < partyMembers.Length; i++)
         {
             if(partyMembers[i] != null)
@@ -196,11 +227,30 @@ public class BattleHandler : MonoBehaviour {
                 if(partyMembers[i].Stats.IsAlive == true && activeMember < i)
                 {
                     activeMember = i;
+                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+                    return true;
+                }
+            }
+        }
+        //partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+        return false;
+    }
+    public bool FirstMember()
+    {
+        //partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * -.5f;
+        for(int i = 0; i <partyMembers.Length; i++)
+        {
+
+            if(partyMembers[i] != null)
+            {
+                if(partyMembers[i].Stats.IsAlive == true)
+                {
+                    activeMember = i;
+                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
                     return true;
                 }
             }
         }
         return false;
     }
-
 }

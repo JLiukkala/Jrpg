@@ -23,8 +23,6 @@ public class PassiveUI : MonoBehaviour {
             Initiate();
         }
     }
-
-<<<<<<< HEAD
     // Makes a getter and a setter for the boolean variable isAtEnd.
     public bool IsAtEnd
     {
@@ -38,8 +36,6 @@ public class PassiveUI : MonoBehaviour {
     }
 
     // If an input key is pressed, the Scroll method is called.
-=======
->>>>>>> 93e0a6c7e73a362fb24949103112ddec8b757565
     public void HandleInput(string input) {
         if (input == ("Select"))
         {
@@ -47,20 +43,12 @@ public class PassiveUI : MonoBehaviour {
         } 
     }
 
-<<<<<<< HEAD
     // Initiates the description text and sets it in the first position.
-=======
-    }
->>>>>>> 93e0a6c7e73a362fb24949103112ddec8b757565
     private void Initiate() {
         _description.text = text[position];
     }
 
-<<<<<<< HEAD
     // Scrolls to the next position.
-=======
-    }
->>>>>>> 93e0a6c7e73a362fb24949103112ddec8b757565
     private void Scroll() {
         if (text.Length == position + 1)
         {
@@ -71,12 +59,4 @@ public class PassiveUI : MonoBehaviour {
             _description.text = text[position];
         }
     }
-
-
-<<<<<<< HEAD
-=======
-    }
-
-
->>>>>>> 93e0a6c7e73a362fb24949103112ddec8b757565
 }

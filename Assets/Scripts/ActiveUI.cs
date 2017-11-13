@@ -15,11 +15,14 @@ public class ActiveUI : MonoBehaviour {
     private int textoption = 0;
     private int position = 0;
     private bool isInTarget = false;
+    private bool isAreaofEffect = false;
     private UIObject ui;
     private UIHandler uiHandler;
     private TargetUI target;
     //private string[,] currentUI;
     private int goingUp = -1, goingDown = 1, goingFirst = -10, goingLast = 10;
+    private Color gray = new Color(.4f, .4f, .4f);
+    private Color black = new Color(0, 0, 0);
     private void Awake()
     {
         battleHandler = (BattleHandler)GameObject.FindWithTag("Battle Handler").GetComponent(typeof(BattleHandler));
@@ -63,8 +66,33 @@ public class ActiveUI : MonoBehaviour {
     {
         //Displays menu items
         _selections[0].text = ui.Option(0);
+        
         _selections[1].text = ui.Option(1);
         _selections[2].text = ui.Option(2);
+        if(ui.CurrentScreen == 1)
+        {
+            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(0)).Cost<= battleHandler.GetPlayer().Stats.Special))
+            {
+                _selections[0].color = gray;
+            } else
+            {
+                _selections[0].color = black;
+            }
+            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(1)).Cost <= battleHandler.GetPlayer().Stats.Special))
+            {
+                _selections[1].color = gray;
+            } else
+            {
+                _selections[1].color = black;
+            }
+            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(2)).Cost <= battleHandler.GetPlayer().Stats.Special))
+            {
+                _selections[2].color = gray;
+            } else
+            {
+                _selections[2].color = black;
+            }
+        }
     }
 
 
@@ -74,7 +102,7 @@ public class ActiveUI : MonoBehaviour {
         {
             Restore(ui.CurrentTextItem);//restore every loop to prepare for change
             if(input == "Select")
-            { 
+            {
                 if(ui.Action == "Skills")
                 {
                     SetScreen(1);
@@ -84,9 +112,22 @@ public class ActiveUI : MonoBehaviour {
                     //SetScreen(2);
                 } else
                 {
-                    target = Instantiate(_targetPrefab, new Vector2(0, 0), Quaternion.identity);
-                    target.Action = ui.Action;
-                    isInTarget = true;
+                    if((battleHandler.GetPlayer().FindAbility(ui.Action).Cost <= battleHandler.GetPlayer().Stats.Special))
+                    {
+
+
+                        if(battleHandler.GetPlayer().FindAbility(ui.Action).AreaOfEffect || battleHandler.GetPlayer().FindAbility(ui.Action).IsRandom)
+                        {
+                            Select();
+                        } else
+                        {
+                            target = Instantiate(_targetPrefab, new Vector2(0, 0), Quaternion.identity);
+                            target.Action = ui.Action;
+                            isAreaofEffect = false;
+                        }
+
+                        isInTarget = true;
+                    }
                 }
             }
             if(input == "Back")
@@ -142,6 +183,38 @@ public class ActiveUI : MonoBehaviour {
     public void Select(int target) {
         
         battleHandler.Select(target, ui.Action);
+        uiHandler.Destroy();
+        Destroy(gameObject);
+    }
+
+    public void Select()
+    {
+        AbilityObject ability = battleHandler.GetPlayer().FindAbility(ui.Action);
+        if(ability.IsRandom)
+        {
+            for(int i = 0; i < ability.Targets; i++)
+            {
+                if(ability.TargetEnemy)
+                {
+                    battleHandler.Select(Random.Range(0, battleHandler.EnemyCount()), ui.Action);
+                } else
+                {
+                    battleHandler.Select(Random.Range(battleHandler.EnemyCount(), battleHandler.EnemyCount() + battleHandler.PlayerCount()), ui.Action);
+                }
+            }
+        }else if(ability.TargetEnemy)
+        {
+            for(int i = 0; i < battleHandler.EnemyCount(); i++)
+            {
+                battleHandler.Select(i, ui.Action);
+            }
+        } else
+        {
+            for(int i = 0; i < battleHandler.PlayerCount(); i++)
+            {
+                battleHandler.Select(i+battleHandler.EnemyCount(), ui.Action);
+            }
+        }
         uiHandler.Destroy();
         Destroy(gameObject);
     }

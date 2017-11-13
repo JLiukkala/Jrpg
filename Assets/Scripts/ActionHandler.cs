@@ -26,30 +26,73 @@ public class ActionHandler : MonoBehaviour {
          //   _battle.GetPlayer(x.Origin).Stats.Speed + _battle.GetPlayer(x.Origin).Abilities.AbilityList[_battle.GetPlayer(x.Origin).Abilities.SkillIndex(x.Action)].Speed);
         //sorts the stack of current actions based on speed
     }
+    public int ActionLength() {
+        return actionList.Count;
+    }
     public ActionObject Pop()
     {
-        var temp = actionList[actionList.Count - 1];
-        actionList.RemoveAt(actionList.Count - 1);
-        return temp;
+        if(actionList.Count>0)
+        {
+            var temp = actionList[actionList.Count - 1];
+            actionList.RemoveAt(actionList.Count - 1);
+            return temp;
+        } else
+        {
+            return null;
+        }
+        
+    }
+    public ActionObject Current()
+    {
+        if(actionList.Count > 0)
+        {
+            var temp = actionList[actionList.Count - 1];
+            return temp;
+        } else
+        {
+            return null;
+        }
+
     }
     public void Push(BattleEntity origin, string type, BattleEntity target)
     {
         ActionObject obj = new ActionObject(origin, type, target);
         actionList.Add(obj);
     }
+
+    bool newattack = true;
+    float starttime;
+    Vector3 pos;
     public void Fight()
     {
-        int length = actionList.Count;
-        
-        for(int i = 0; i < length; i++)
+        ActionObject obj = Current();
+        if(newattack)
         {
-            
-            ActionObject obj = Pop();
+            starttime = Time.time;
+            pos = obj.Origin.transform.position;
+            obj.Origin.transform.position = obj.Target.transform.position;
+            obj.Origin.Stats.Special = obj.Origin.FindAbility(obj.Action).Cost;
             for(int j = 0; j < obj.Origin.FindAbility(obj.Action).Effects.Length; j++)
             {
+
+                obj.Origin.FindAbility(obj.Action).Effects[j].Setup();
                 obj.Target.Stats.Effects = obj.Origin.FindAbility(obj.Action).Effects[j];
+                //run action animation on target
             }
-            
+            newattack = false;
+        }
+
+
+
+        if(Time.time - starttime> 1)
+        {
+            obj.Origin.transform.position = pos;
+            obj.Origin.Action();
+        }
+        if(Time.time - starttime > 2)
+        {
+            Pop();
+            newattack = true;
         }
     }
     public void Print()
