@@ -92,6 +92,11 @@ public class ActiveUI : MonoBehaviour {
             {
                 _selections[2].color = black;
             }
+        } else
+        {
+            _selections[0].color = black;
+            _selections[1].color = black;
+            _selections[2].color = black;
         }
     }
 
