@@ -71,13 +71,17 @@ public class ActionHandler : MonoBehaviour {
             starttime = Time.time;
             pos = obj.Origin.transform.position;
             obj.Origin.transform.position = obj.Target.transform.position;
-            obj.Origin.Stats.Special = obj.Origin.FindAbility(obj.Action).Cost;
+            obj.Origin.Stats.Mana = obj.Origin.FindAbility(obj.Action).Cost;
             for(int j = 0; j < obj.Origin.FindAbility(obj.Action).Effects.Length; j++)
             {
 
                 obj.Origin.FindAbility(obj.Action).Effects[j].Setup();
                 obj.Target.Stats.Effects = obj.Origin.FindAbility(obj.Action).Effects[j];
                 //run action animation on target
+            }
+            if(true)
+            {
+
             }
             newattack = false;
         }
@@ -87,10 +91,11 @@ public class ActionHandler : MonoBehaviour {
         if(Time.time - starttime> 1)
         {
             obj.Origin.transform.position = pos;
-            obj.Origin.Action();
+            
         }
         if(Time.time - starttime > 2)
         {
+            obj.Origin.Action();
             Pop();
             newattack = true;
         }
