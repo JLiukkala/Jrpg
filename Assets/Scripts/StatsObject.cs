@@ -4,8 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 public enum StatusOptions
 {
-    Attack, Damage, Heal, ModifyAttack, ModifyDefense,
+    Attack, MagicAttack,//damage based of character plus a percent or value margin
+    Damage,//spicific damage rang
+    Heal,
+    //buffs and debuffs
+    ModifyAttack, ModifyDefense,
     ModifySpeed, ModifyIntelligence, ModifyMagicResist,
+    //status effects
+    Sleep
 }
 
 public class StatsObject : MonoBehaviour {
@@ -16,7 +22,7 @@ public class StatsObject : MonoBehaviour {
 
     [SerializeField, Tooltip("Health and its per level growth")]
     private int _health = 100, _healthGrowth = 1;
-    private int _currentHealth;
+    private int _currentDamage;
     [SerializeField, Tooltip("Spell Points and its per level growth")]
     private int _special = 100, _specialGrowth = 1;
     private int _currentSpecial;
@@ -35,6 +41,11 @@ public class StatsObject : MonoBehaviour {
     [SerializeField, Tooltip("magic resist and its per level growth")]
     private int _magicResist = 20, _magicResistGrowth = 1;
     private int _currentMagicResist;
+    [SerializeField, Tooltip("GameObject to hold all the Status effects")]
+    private StatusHolder _statusHolder;
+    [SerializeField, Tooltip("GameObject to hold all the buff images")]
+    private BuffHolder _buffHolder;
+    public bool log = false;
 
     [SerializeField, Tooltip("Health text")]
     private Text _healthText;
@@ -46,7 +57,7 @@ public class StatsObject : MonoBehaviour {
     private void Start()
     {
         _healthText.text = Health.ToString();
-        _manaText.text = Special.ToString();
+        _manaText.text = Mana.ToString();
         float x = ((transform.parent.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect-.5f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize* 2);
         float y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
         _healthText.transform.position = new Vector3(x,y,0);
@@ -55,58 +66,85 @@ public class StatsObject : MonoBehaviour {
         _manaText.transform.position = new Vector3(x, y, 0);
     }
 
-    public void Process() {
+    public void Process() {        
         ResetCurrents();
         for(int i = 0; i < effects.Count;)
         {
-            Process(effects[i]);
-            effects[i].Length -= 1;
+            
             if(effects[i].Length == 0)
             {
                 effects.RemoveAt(i);
             } else
             {
+                Process(effects[i]);
+                effects[i].Length -= 1;
                 i++;
             }
-            
         }
+        _buffHolder.Clear();
     }
     public void Process(StatusObject effect)
     {
         switch(effect.Effect)
         {
             case StatusOptions.Attack:
-                Health = (int)(effect.Attack * effect.Value);
+                TakeDamage((int)(effect.Attack * effect.Value));
                 break;
+            case StatusOptions.MagicAttack:
+                TakeMagicDamage((int)(effect.Intelligence * effect.Value)) ;
+                break;
+            
             case StatusOptions.Damage:
                 Health = (int)(effect.Value);
                 break;
+
             case StatusOptions.Heal:
                 Health = -(int)(effect.Value);
                 break;
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //******************************************************Status Effects***********************************************//
             case StatusOptions.ModifyAttack:
-                _currentAttack += (int)(effect.Value*_attack);
+                _currentAttack += (int)(effect.Value*_attack- _attack);
+                _buffHolder.Add(effect.Effect, DetermineSeverity(effect) );
                 break;
             case StatusOptions.ModifyDefense:
-                _currentDefense += (int)(effect.Value * _defense);
+                _currentDefense += (int)(effect.Value * _defense-_defense);
+                _buffHolder.Add(effect.Effect, DetermineSeverity(effect));
                 break;
             case StatusOptions.ModifySpeed:
-                _currentSpeed += (int)(effect.Value * _speed);
+                _currentSpeed += (int)(effect.Value * _speed-_speed);
+                _buffHolder.Add(effect.Effect, DetermineSeverity(effect));
                 break;
             case StatusOptions.ModifyIntelligence:
-                _currentIntelligence += (int)(effect.Value * _intelligence);
+                _currentIntelligence += (int)(effect.Value * _intelligence - _intelligence);
+                _buffHolder.Add(effect.Effect, DetermineSeverity(effect));
                 break;
             case StatusOptions.ModifyMagicResist:
-                _currentMagicResist += (int)(effect.Value * _magicResist);
+                _currentMagicResist += (int)(effect.Value * _magicResist - _magicResist);
+                _buffHolder.Add(effect.Effect, DetermineSeverity(effect));
                 break;
             default:
                 break;
         }
         _healthText.text = Health.ToString();
-        _manaText.text = Special.ToString();
+        _manaText.text = Mana.ToString();
 
     }
-
+    public Severity DetermineSeverity(StatusObject effect) {
+        if(effect.ActualValue > 1.4 &&effect.Value > 0)
+        {
+            return Severity.DoubleUp;
+        } else if(effect.ActualValue <= 1.4 && effect.Value > 0)
+        {
+            return Severity.Up;
+        } else if(effect.ActualValue > 1.4 && effect.Value < 0)
+        {
+            return Severity.DoubleDown;
+        } else
+        {
+            return Severity.Down;
+        }
+    }
     private void ResetCurrents()
     {
         _currentAttack = 0;
@@ -114,14 +152,8 @@ public class StatsObject : MonoBehaviour {
         _currentSpeed = 0;
         _currentIntelligence = 0;
         _currentMagicResist = 0;
-
     }
-    public int Level
-    {
-        get {
-            return _level;
-        }
-    }
+    
 
     public bool IsAlive
     {
@@ -148,75 +180,114 @@ public class StatsObject : MonoBehaviour {
         }
     }
 
+
     public StatusObject Effects
     {
         set {
             if(value.InstantCalculate)
             {
                 Process(value);
-            } else
-            {
-                value.RollDuration();
-                effects.Add(value);
             }
+            value.RollDuration();
+            effects.Add(value);
         }
     }
 
+
+    public int Level
+    {
+        get {
+            return _level;
+        }
+    }
     public int Health
     {
         get {
-            return _health * _healthGrowth - _currentHealth;
+            return _health + Level * _healthGrowth - _currentDamage;
         }
 
         private set {
-            _currentHealth = Mathf.Clamp(_currentHealth + value, 0, MaxHealth);
+            _currentDamage = Mathf.Clamp(_currentDamage + value, 0, MaxHealth);
             if(Health == 0)
             {
 
             }
         }
     }
-    public int MaxHealth {
-        get {
-            return _health + Level * _healthGrowth;
-        }
-    }
-
-    public int Special
+    public int Mana
     {
         get {
             return _special * _specialGrowth - _currentSpecial;
         }
 
         set {
-            _currentSpecial = Mathf.Clamp(_currentSpecial + value, 0, MaxSpecial);
+            _currentSpecial = Mathf.Clamp(_currentSpecial + value, 0, MaxMana);
         }
     }
-    public int MaxSpecial
+
+
+    public void TakeDamage(int damage) {
+        int wut = damage * damage / (damage + CurrentDefense);
+
+        Debug.Log(wut);
+        Debug.Log("Damage: " + damage + "  Defense:" + CurrentDefense);
+        _currentDamage += wut;
+        _currentDamage = Mathf.Clamp(_currentDamage, 0, MaxHealth);
+    }
+    public void TakeMagicDamage(int Damage)
+    {
+        int wut = Damage * (Damage / (Damage + CurrentMagicDefense));
+
+
+        Debug.Log(wut);
+        Debug.Log("Damage: " + Damage + "  Defense:" + CurrentMagicDefense);
+        _currentDamage += wut;
+        _currentDamage = Mathf.Clamp(_currentDamage, 0, MaxHealth);
+    }
+
+
+
+    public int MaxHealth {
+        get {
+            return _health + Level * _healthGrowth;
+        }
+    }
+    public int MaxMana
     {
         get {
             return _special + Level * _specialGrowth;
         }
     }
-
-    public int Speed
-    {
-        get {
-            return _speed + (int)(_speedGrowth * _level);
-        }
-    }
+    
 
     public int CurrentAttack
     {
         get {
-            return _attack + _currentAttack;
+            return _attack + Level * _defenseGrowth + _currentDefense;
         }
     }
-
     public int CurrentIntelligence
     {
         get {
-            return _intelligence + _currentIntelligence;
+            return _intelligence + Level * _defenseGrowth + _currentDefense;
+        }
+    }
+    public int CurrentDefense
+    {
+        get {
+            return _defense + Level * _defenseGrowth + _currentDefense;
+        }
+    }
+    public int CurrentMagicDefense
+    {
+        get {
+            return _magicResist + Level * _magicResistGrowth + _currentMagicResist;
+        }
+    }
+    public int CurrentSpeed
+    {
+        get {
+            return _speed + (int)(_speedGrowth * _level);
         }
     }
 

@@ -71,21 +71,21 @@ public class ActiveUI : MonoBehaviour {
         _selections[2].text = ui.Option(2);
         if(ui.CurrentScreen == 1)
         {
-            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(0)).Cost<= battleHandler.GetPlayer().Stats.Special))
+            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(0)).Cost<= battleHandler.GetPlayer().Stats.Mana))
             {
                 _selections[0].color = gray;
             } else
             {
                 _selections[0].color = black;
             }
-            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(1)).Cost <= battleHandler.GetPlayer().Stats.Special))
+            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(1)).Cost <= battleHandler.GetPlayer().Stats.Mana))
             {
                 _selections[1].color = gray;
             } else
             {
                 _selections[1].color = black;
             }
-            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(2)).Cost <= battleHandler.GetPlayer().Stats.Special))
+            if(!(battleHandler.GetPlayer().FindAbility(ui.Option(2)).Cost <= battleHandler.GetPlayer().Stats.Mana))
             {
                 _selections[2].color = gray;
             } else
@@ -117,7 +117,7 @@ public class ActiveUI : MonoBehaviour {
                     //SetScreen(2);
                 } else
                 {
-                    if((battleHandler.GetPlayer().FindAbility(ui.Action).Cost <= battleHandler.GetPlayer().Stats.Special))
+                    if((battleHandler.GetPlayer().FindAbility(ui.Action).Cost <= battleHandler.GetPlayer().Stats.Mana))
                     {
 
 

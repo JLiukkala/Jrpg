@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//Debug.Log("At " + (int) Time.time + " seconds: " + "");
 public class StatusObject : MonoBehaviour {
 
     static string[] EffectsList = new string[] {"Damage", "Heal" };
@@ -22,6 +22,7 @@ public class StatusObject : MonoBehaviour {
     private StatsObject _masterStats;
     [SerializeField, Tooltip("Amount above and below value that it could possibly be")]
     private bool _instantCalculate = false;
+    public bool log = false;
     
 
     private int attack;
@@ -32,7 +33,12 @@ public class StatusObject : MonoBehaviour {
     public void Setup()
     {
         Attack = _masterStats.CurrentAttack;
-        Debug.Log("Attack set to: "+ _masterStats.CurrentAttack);
+        if(log)
+        {
+            Debug.Log("At " + (int)Time.time + " seconds: " + "Attack set to: " + _masterStats.CurrentAttack);
+        }
+       
+        
         Intelligence = _masterStats.CurrentIntelligence;
     }
 
@@ -97,5 +103,13 @@ public class StatusObject : MonoBehaviour {
         private set {
             intelligence = value;
         }
+    }
+
+    public float ActualValue
+    {
+        get {
+            return _value;
+        }
+
     }
 }
