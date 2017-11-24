@@ -40,7 +40,7 @@ public class BattleHandler : MonoBehaviour {
                 if(state.PartyMember(i).Stats.IsAlive == true && activeMember == -1)//If its the first alive member set to active
                 {
                     activeMember = i;
-                    partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
+                    
                 }
             } else
             {
@@ -95,6 +95,7 @@ public class BattleHandler : MonoBehaviour {
         //Entry Phase
         else if(phase == 1)
         {
+            partyMembers[activeMember].transform.position = partyMembers[activeMember].transform.position + Vector3.up * .5f;
             //  play intro animation
             //  play player and enemie animations
             //  Ui style toPassive(intro text)

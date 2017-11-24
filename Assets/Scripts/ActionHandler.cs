@@ -79,9 +79,9 @@ public class ActionHandler : MonoBehaviour {
                 obj.Target.Stats.Effects = obj.Origin.FindAbility(obj.Action).Effects[j];
                 //run action animation on target
             }
-            if(true)
+            if(obj.Origin.FindAbility(obj.Action).Animation!=null)
             {
-
+                
             }
             newattack = false;
         }

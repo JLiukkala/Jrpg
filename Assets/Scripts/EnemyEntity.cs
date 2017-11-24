@@ -6,12 +6,16 @@ public class EnemyEntity : BattleEntity {
 
     public string _entryText;
     public string Think() {
-        if(Random.Range(0, 2) == 0)
+        int thought = Random.Range(0, 4);
+        if(thought < 2)
         {
             return "Attack";
-        } else
+        } else if(thought == 2)
         {
             return Ability(Random.Range(0, AbilitiesLength)).Name;
+        } else
+        {
+            return Ability(Random.Range(1, AbilitiesLength)).Name;
         }
         
     }

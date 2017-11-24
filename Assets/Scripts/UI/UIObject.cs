@@ -27,7 +27,9 @@ public class UIObject {
         //create heirarchy
 
     }
-
+    public int MenuLength() {
+        return UI[currentScreen].Count;
+    }
     //Getters and Setters
     public int CurrentSelection
     {

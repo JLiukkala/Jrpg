@@ -19,7 +19,7 @@ public class StatsObject : MonoBehaviour {
     //Pretty straightforward stat holder
     [SerializeField, Tooltip("Name of ability")]
     private int _level = 0;
-
+    public bool showMana = true;
     [SerializeField, Tooltip("Health and its per level growth")]
     private int _health = 100, _healthGrowth = 1;
     private int _currentDamage;
@@ -59,11 +59,15 @@ public class StatsObject : MonoBehaviour {
         _healthText.text = Health.ToString();
         _manaText.text = Mana.ToString();
         float x = ((transform.parent.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect-.5f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize* 2);
-        float y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        float y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1.5f) * _healthText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
         _healthText.transform.position = new Vector3(x,y,0);
         x = ((transform.parent.transform.position.x + Camera.main.orthographicSize * Camera.main.aspect + .5f) * _manaText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
-        y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1f) * _manaText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        y = ((transform.parent.transform.position.y + Camera.main.orthographicSize + 1.5f) * _manaText.transform.parent.gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
         _manaText.transform.position = new Vector3(x, y, 0);
+        if(!showMana)
+        {
+            _manaText.gameObject.SetActive(false);
+        }
     }
 
     public void Process() {        
@@ -82,9 +86,11 @@ public class StatsObject : MonoBehaviour {
             }
         }
         _buffHolder.Clear();
+        _manaText.text = Mana.ToString();
     }
     public void Process(StatusObject effect)
     {
+        
         switch(effect.Effect)
         {
             case StatusOptions.Attack:
@@ -99,7 +105,7 @@ public class StatsObject : MonoBehaviour {
                 break;
 
             case StatusOptions.Heal:
-                Health = -(int)(effect.Value);
+                Health = -(int)(effect.Intelligence * effect.Value);
                 break;
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //******************************************************Status Effects***********************************************//
@@ -127,7 +133,7 @@ public class StatsObject : MonoBehaviour {
                 break;
         }
         _healthText.text = Health.ToString();
-        _manaText.text = Mana.ToString();
+        
 
     }
     public Severity DetermineSeverity(StatusObject effect) {
@@ -217,7 +223,7 @@ public class StatsObject : MonoBehaviour {
     public int Mana
     {
         get {
-            return _special * _specialGrowth - _currentSpecial;
+            return MaxMana - _currentSpecial;
         }
 
         set {
@@ -228,9 +234,6 @@ public class StatsObject : MonoBehaviour {
 
     public void TakeDamage(int damage) {
         int wut = damage * damage / (damage + CurrentDefense);
-
-        Debug.Log(wut);
-        Debug.Log("Damage: " + damage + "  Defense:" + CurrentDefense);
         _currentDamage += wut;
         _currentDamage = Mathf.Clamp(_currentDamage, 0, MaxHealth);
     }

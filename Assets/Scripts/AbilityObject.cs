@@ -24,6 +24,8 @@ public class AbilityObject : MonoBehaviour {
     private int _targets = 1;
     [SerializeField, Tooltip("For aoe wich side to target")]
     private bool _targetEnemy = true;
+    [SerializeField, Tooltip("For aoe wich side to target")]
+    private GameObject _animation;
     public string Name
     {
         get {
@@ -91,6 +93,13 @@ public class AbilityObject : MonoBehaviour {
     {
         get {
             return _targets;
+        }
+    }
+
+    public GameObject Animation
+    {
+        get {
+            return _animation;
         }
     }
 }

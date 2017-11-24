@@ -9,14 +9,20 @@ public class ActiveUI : MonoBehaviour {
     private Text _description;
     [SerializeField, Tooltip("Selection Texts")]
     private Text[] _selections;
+    [SerializeField, Tooltip("Selection Texts")]
+    private Text _mpcost;
     [SerializeField, Tooltip("Prefab for target")]
     private TargetUI _targetPrefab;
+    [SerializeField, Tooltip("Prefab for target")]
+    private GameObject arrowup, arrowdown;
+    public int _blinkSpeed = 1;
     private BattleHandler battleHandler;
     private int textoption = 0;
     private int position = 0;
     private bool isInTarget = false;
     private bool isAreaofEffect = false;
     private UIObject ui;
+    private bool sync = false;
     private UIHandler uiHandler;
     private TargetUI target;
     //private string[,] currentUI;
@@ -36,7 +42,7 @@ public class ActiveUI : MonoBehaviour {
             return false;
         }
     }
-
+    private int frames = 1;
     public void Populate(PlayerEntity player, UIHandler UI)
     {
         uiHandler = UI;
@@ -56,11 +62,52 @@ public class ActiveUI : MonoBehaviour {
 
         Highlight(ui.CurrentSelection);
     }
+    private void Update()
+    {
+        if(ui!=null)
+        {
+
+        }
+        sync = !sync;
+        Debug.Log(ui);
+        bool up = ui.CurrentSelection ==0;
+        bool down = (ui.MenuLength() - 1 == ui.CurrentSelection);
+        if( frames % _blinkSpeed== 0)
+        {
+            
+            if(!up)
+            {
+                arrowup.SetActive(sync);  
+            }
+            if(!down)
+            {
+                arrowdown.SetActive(sync);
+            }
+            frames = 1;
+        }
+        if(up)
+        {
+            arrowup.SetActive(false);
+        }
+        if(down)
+        {
+            arrowdown.SetActive(false);
+        }
+        frames++;
+    }
 
     private void UpdateDescription()
     {
         //Displays discription of menu item given
         _description.text = ui.Description();
+        if(ui.CurrentScreen == 1)
+        {
+            _mpcost.text = "Cost: "+battleHandler.GetPlayer().FindAbility(ui.Action).Cost.ToString();
+            _mpcost.gameObject.SetActive(true);
+        } else
+        {
+            _mpcost.gameObject.SetActive(false);
+        }
     }
     private void UpdateOptions()
     {
@@ -92,6 +139,7 @@ public class ActiveUI : MonoBehaviour {
             {
                 _selections[2].color = black;
             }
+            
         } else
         {
             _selections[0].color = black;
