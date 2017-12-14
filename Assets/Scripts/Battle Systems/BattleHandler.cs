@@ -172,14 +172,14 @@ public class BattleHandler : MonoBehaviour {
 
    
     //Passes actions to Action Handler also goes to next member
-    public void Select(int target, string action) {
-        if(target < partyMembers.Length)
+    public void Select(int target, string action, bool isTargetEnemy) {
+        if(isTargetEnemy)
         {
-            _actionHandler.Push(partyMembers[activeMember], action, partyMembers[target ]);
-            
+            _actionHandler.Push(partyMembers[activeMember], action, enemies[target]);
+
         } else
         {
-            _actionHandler.Push(partyMembers[activeMember], action, enemies[target - partyMembers.Length]);
+            _actionHandler.Push(partyMembers[activeMember], action, partyMembers[target]);
         }
         if(!NextMember())
         {

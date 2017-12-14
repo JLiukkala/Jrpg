@@ -187,14 +187,15 @@ public class UIHandler : MonoBehaviour {
                 for(int i = 0; i < 7; i++)
                 {
                     Selections[i].gameObject.SetActive(true);
-                    if(i < 4)
+                    if(i < enemyMembers.Length)
                     {
-                        Selections[i]._name.text = partyMembers[i].Name;
-                        Selections[i]._health.text = "HP: " + partyMembers[i].Stats.Health;
+                        Selections[i]._name.text = enemyMembers[i].Name;
+                        Selections[i]._health.text = "HP: " + enemyMembers[i].Stats.Health;
+                        
                     } else if(i < 4 + enemyMembers.Length)
                     {
-                        Selections[i]._name.text = enemyMembers[i - 4].Name;
-                        Selections[i]._health.text = "HP: " + enemyMembers[i - 4].Stats.Health;
+                        Selections[i]._name.text = partyMembers[i- enemyMembers.Length].Name;
+                        Selections[i]._health.text = "HP: " + partyMembers[i- enemyMembers.Length].Stats.Health;
                     } else
                     {
                         Selections[i]._name.text = "";
@@ -218,6 +219,15 @@ public class UIHandler : MonoBehaviour {
                     skills[i].gameObject.SetActive(true);
                     skills[i]._name.text = partyMembers[CurrentMember].Ability(i).Name;
                     skills[i]._cost.text = "MP: " + partyMembers[CurrentMember].Ability(i).Cost;
+                    if (partyMembers[CurrentMember].Ability(i).Cost> partyMembers[CurrentMember].Stats.Mana)
+                    {
+                        skills[i]._cost.color = Color.red;
+                    }
+                    else
+                    {
+                        skills[i]._cost.color = Color.white;
+                    }
+
                     skills[i]._description.text = partyMembers[CurrentMember].Ability(i).Description;
                     Normalize(i);
 
@@ -271,9 +281,15 @@ public class UIHandler : MonoBehaviour {
                 select.Play();
                 if(CurrentState == MenuState.Ability)
                 {
-                    action = skills[currentSelection]._name.text;
-                    TransformState(MenuState.Target);
-                    //TransformState(MenuState.Ability);
+                    if (partyMembers[CurrentMember].Ability(currentSelection).Cost > partyMembers[CurrentMember].Stats.Mana)
+                    {
+                        Splash("Not Enough Mana");
+                    }
+                    else
+                    {
+                        action = skills[currentSelection]._name.text;
+                        TransformState(MenuState.Target);
+                    }
 
                 } else if(CurrentState == MenuState.Target)
                 {
@@ -369,7 +385,14 @@ public class UIHandler : MonoBehaviour {
 
     private void Select()
     {
-        _battleHandler.Select(currentSelection, action);
+        if (currentSelection< enemyMembers.Length)
+        {
+            _battleHandler.Select(currentSelection, action,true);
+        }
+        else
+        {
+            _battleHandler.Select(currentSelection- enemyMembers.Length, action,false);
+        }
         TransformState(MenuState.Empty);
     }
 }
