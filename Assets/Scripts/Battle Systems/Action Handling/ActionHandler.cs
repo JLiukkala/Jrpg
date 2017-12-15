@@ -75,6 +75,11 @@ public class ActionHandler : MonoBehaviour {
     public void Fight()
     {
         ActionObject obj = Current();
+        if (obj.Target.Stats.Health == 0)
+        {
+            _battle.Reselect(Pop());
+            return;
+        }
         if (obj.Origin.Stats.IsAlive)
         {
             //We get the current action

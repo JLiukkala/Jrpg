@@ -47,6 +47,10 @@ public class BattleHandler : MonoBehaviour {
                 {
                     activeMember = i;
                 }
+                if (partyMembers[i].Stats.Health ==0)
+                {
+                    partyMembers[i].gameObject.SetActive(false);
+                }
             } else
             {
                 Debug.LogWarning("Tried to instantiate null party member at index: "+i);
@@ -184,6 +188,36 @@ public class BattleHandler : MonoBehaviour {
         if(!NextMember())
         {
             phase = 3;
+        }
+    }
+
+    public void Reselect(ActionObject obj) {
+        BattleEntity origin = obj.Origin;
+        string action = obj.Action;
+        bool goodselect = false;
+        bool istargetenemy = origin.FindAbility(action).TargetEnemy;
+        int roll;
+        while (!goodselect)
+        {
+            if (istargetenemy)
+            {
+                roll = Random.Range(0, enemies.Length);
+                if (enemies[roll].Stats.Health >0)
+                {
+                    goodselect = true;
+                    _actionHandler.Push(origin, action, enemies[roll]);
+                }
+            }
+            else
+            {
+                roll = Random.Range(0, partyMembers.Length);
+                if (partyMembers[roll].Stats.Health > 0)
+                {
+                    goodselect = true;
+                    _actionHandler.Push(origin, action, partyMembers[roll]);
+                }
+            }
+            
         }
     }
 

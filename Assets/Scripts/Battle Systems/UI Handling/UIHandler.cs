@@ -118,7 +118,7 @@ public class UIHandler : MonoBehaviour {
             float x = (Camera.main.orthographicSize * Camera.main.aspect + 2f//gets center of game space then we add 1 unit
                 + 3.5f * -Mathf.Sin(Mathf.PI * i + .5f * Mathf.PI))// depending on the sin graph wich will return 1 or -1 we either subtract or add our x from the center of the group
                 * screenRatio;//the we multiply by our game to screen ratio
-            float y = (Camera.main.orthographicSize - 3.25f
+            float y = (Camera.main.orthographicSize - 3f
                 + .80f * (1 / Mathf.Sin(Mathf.PI / 4)) * Mathf.Sin((Mathf.PI / 2) * i + (Mathf.PI / 4)))
                 * screenRatio;
             skills[i].transform.position = new Vector2((x * scale), (y * scale));
@@ -284,11 +284,11 @@ public class UIHandler : MonoBehaviour {
 
     public void PassInput(string input)
     {
-        switch(input)
+        switch (input)
         {
             case "Select":
                 select.Play();
-                if(CurrentState == MenuState.Ability)
+                if (CurrentState == MenuState.Ability)
                 {
                     if (partyMembers[CurrentMember].Ability(currentSelection).Cost > partyMembers[CurrentMember].Stats.Mana)
                     {
@@ -300,9 +300,32 @@ public class UIHandler : MonoBehaviour {
                         TransformState(MenuState.Target);
                     }
 
-                } else if(CurrentState == MenuState.Target)
+                } else if (CurrentState == MenuState.Target)
                 {
-                    Select();
+                    if (currentSelection<enemyMembers.Length)
+                    {
+                        if (enemyMembers[currentSelection].Stats.Health == 0)
+                        {
+                            Splash("Can't target the dead");
+                        }
+                        else
+                        {
+                            Select();
+                        }
+                    }
+                    else
+                    {
+                        if (partyMembers[currentSelection-enemyMembers.Length].Stats.Health == 0)
+                        {
+                            Splash("Can't target the dead");
+                        }
+                        else
+                        {
+                            Select();
+                        }
+                    }
+                    
+                    
                 }
                 break;
             case "Back":

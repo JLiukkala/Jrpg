@@ -25,17 +25,7 @@ public class EnemyEntity : BattleEntity {
 
     //Randomly returns one of the enemies abilitiesd
     public string Think() {
-        int thought = Random.Range(0, 4);
-        if(thought < 2)
-        {
-            return "Attack";
-        } else if(thought == 2)
-        {
-            return Ability(Random.Range(0, AbilitiesLength)).Name;
-        } else
-        {
-            return Ability(Random.Range(1, AbilitiesLength)).Name;
-        }
+        return Ability(Random.Range(0, AbilitiesLength)).Name;
     }
     //Randomly returns a target between 0 and enemy count
     public int Target(int enemyCount)

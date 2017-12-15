@@ -98,12 +98,6 @@ public class StatsObject : MonoBehaviour {
                 i++;
             }
         }
-        if (!IsAlive)
-        {
-            //show dead
-            gameObject.SetActive(false);
-        }
-
     }
     
     //Takes an effect and preforms the action
@@ -115,7 +109,6 @@ public class StatsObject : MonoBehaviour {
         {
             case StatusOptions.Attack:
                 TakeDamage((int)(effect.Attack * effect.CalculatedValue));
-                _battleEntity.Splash(((int)(effect.Attack * effect.CalculatedValue)).ToString(),Color.red);
                 //instantiate a number based on value over head                                                                                ////////////Tagged////////////
                 //call battleentity shake for a few seconds************************************************************************************//////////////To//////////////
                 //call battleentity color change for a second                                                                                  ////////////Change////////////
@@ -129,7 +122,7 @@ public class StatsObject : MonoBehaviour {
                 break;
             case StatusOptions.MagicAttack:
                 TakeMagicDamage((int)(effect.Intelligence * effect.CalculatedValue)) ;
-                _battleEntity.Splash(((int)(effect.Intelligence * effect.CalculatedValue)).ToString(),Color.red);
+                
                 //call battleentity shake for a few seconds
                 //call battleentity color change for a second
                 break;
@@ -172,8 +165,7 @@ public class StatsObject : MonoBehaviour {
 
         if (!IsAlive)
         {
-            //show dead
-            gameObject.SetActive(false);
+            _battleEntity.gameObject.SetActive(false);
         }
     }
 
@@ -229,12 +221,14 @@ public class StatsObject : MonoBehaviour {
         //put into a temporary variable because when i was directly putting it into _current damage it was always zero
         //don't know why couldnt fix it so dont make the code into shorthand
         int calculatedDamage = rawDamage * rawDamage / (rawDamage + CurrentDefense);
+        _battleEntity.Splash(calculatedDamage.ToString(), Color.red);
         _currentDamage += calculatedDamage;
         _currentDamage = Mathf.Clamp(_currentDamage, 0, MaxHealth);
     }
     public void TakeMagicDamage(int rawDamage)
     {
-        int calculatedDamage = rawDamage * (rawDamage / (rawDamage + CurrentMagicDefense));
+        int calculatedDamage = rawDamage * rawDamage / (rawDamage + CurrentMagicDefense);
+        _battleEntity.Splash(calculatedDamage.ToString(), Color.red);
         _currentDamage += calculatedDamage;
         _currentDamage = Mathf.Clamp(_currentDamage, 0, MaxHealth);
     }
