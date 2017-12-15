@@ -265,7 +265,16 @@ public class UIHandler : MonoBehaviour {
         float y = ((Camera.main.orthographicSize + pos.y) * gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
         current.transform.position = new Vector2(x*scale, y*scale);
     }
-
+    public void Splash(string text, Vector3 pos, Color c)
+    {
+        TextEffect current = Instantiate(_splashText);
+        current.SetText(text);
+        current.SetColor(c);
+        current.transform.parent = transform;
+        float x = ((Camera.main.orthographicSize * Camera.main.aspect + pos.x) * gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        float y = ((Camera.main.orthographicSize + pos.y) * gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
+        current.transform.position = new Vector2(x * scale, y * scale);
+    }
     public void SetMembers(PlayerEntity[] newMembers, EnemyEntity[] newEnemies)
     {
         partyMembers = newMembers;
@@ -296,7 +305,17 @@ public class UIHandler : MonoBehaviour {
                     Select();
                 }
                 break;
-
+            case "Back":
+                if (CurrentState == MenuState.Ability)
+                {
+                    _battleHandler.PreviousMember();
+                    TransformState(MenuState.Ability);
+                }
+                else if (CurrentState == MenuState.Target)
+                {
+                    TransformState(MenuState.Ability);
+                }
+                break;
             case "Up":
                 select.Play();
                 if (CurrentState == MenuState.Ability)

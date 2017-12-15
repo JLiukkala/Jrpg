@@ -55,4 +55,8 @@ public class TextEffect : MonoBehaviour {
     public void SetText(string newText) {
         _text.text = newText;
     }
+    public void SetColor(Color c) {
+        _mainColor = c;
+        _text.color = c;
+    }
 }

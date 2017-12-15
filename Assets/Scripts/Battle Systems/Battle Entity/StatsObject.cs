@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public enum StatusOptions
 {
     Attack, MagicAttack,
+    ManaRestore,
     Damage, Heal,
     ModifyAttack, ModifyDefense,
     ModifySpeed, ModifyIntelligence, ModifyMagicResist
@@ -114,26 +115,33 @@ public class StatsObject : MonoBehaviour {
         {
             case StatusOptions.Attack:
                 TakeDamage((int)(effect.Attack * effect.CalculatedValue));
-                _battleEntity.Splash(((int)(effect.Attack * effect.CalculatedValue)).ToString());
+                _battleEntity.Splash(((int)(effect.Attack * effect.CalculatedValue)).ToString(),Color.red);
+                //instantiate a number based on value over head                                                                                ////////////Tagged////////////
+                //call battleentity shake for a few seconds************************************************************************************//////////////To//////////////
+                //call battleentity color change for a second                                                                                  ////////////Change////////////
+                break;
+            case StatusOptions.ManaRestore:
+                Mana = -(int)(effect.Intelligence * effect.CalculatedValue);
+                _battleEntity.Splash(((int)(effect.Intelligence * effect.CalculatedValue)).ToString(), Color.blue);
                 //instantiate a number based on value over head                                                                                ////////////Tagged////////////
                 //call battleentity shake for a few seconds************************************************************************************//////////////To//////////////
                 //call battleentity color change for a second                                                                                  ////////////Change////////////
                 break;
             case StatusOptions.MagicAttack:
                 TakeMagicDamage((int)(effect.Intelligence * effect.CalculatedValue)) ;
-                _battleEntity.Splash(((int)(effect.Intelligence * effect.CalculatedValue)).ToString());
+                _battleEntity.Splash(((int)(effect.Intelligence * effect.CalculatedValue)).ToString(),Color.red);
                 //call battleentity shake for a few seconds
                 //call battleentity color change for a second
                 break;
             case StatusOptions.Damage:
                 Health = -(int)(effect.CalculatedValue);
-                _battleEntity.Splash(((int)(effect.CalculatedValue)).ToString());
+                _battleEntity.Splash(((int)(effect.CalculatedValue)).ToString(),Color.red);
                 //call battleentity shake for a few seconds
                 //call battleentity color change for a second
                 break;
             case StatusOptions.Heal:
                 Health = (int)(effect.Intelligence * effect.CalculatedValue);
-                _battleEntity.Splash(((int)(effect.Intelligence * effect.CalculatedValue)).ToString());
+                _battleEntity.Splash(((int)(effect.Intelligence * effect.CalculatedValue)).ToString(), Color.green);
                 break;
             ///////////////////////////////////////////////////////////////////////////////////////////////
             //*****************************************Status Effects************************************//

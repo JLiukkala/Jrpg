@@ -188,7 +188,7 @@ public class BattleHandler : MonoBehaviour {
     }
 
     public void Splash(string text,Vector3 pos,Color c) {
-        _uiHandler.Splash(text, pos);
+        _uiHandler.Splash(text, pos, c);
     }
     public void Splash(string text, Vector3 pos)
     {
@@ -210,6 +210,7 @@ public class BattleHandler : MonoBehaviour {
             }
         }
         partyMembers[activeMember].Select();
+        _uiHandler.CurrentMember = activeMember;
     }
     public bool NextMember()
     {
