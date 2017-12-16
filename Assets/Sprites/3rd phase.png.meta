@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 4b4635578cff6b74c806e35dc131bd54
-timeCreated: 1511164218
+timeCreated: 1513198406
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -88,9 +88,36 @@ TextureImporter:
         width: 66
         height: 100
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 5, w: 0}
-      outline: []
+      outline:
+      - - {x: -21, y: 49}
+        - {x: -27, y: 32}
+        - {x: -27, y: -50}
+        - {x: 30, y: -50}
+        - {x: 30, y: 16}
+        - {x: 2, y: 49}
+      - - {x: -2, y: -45}
+        - {x: -2, y: -43}
+        - {x: -1, y: -36}
+        - {x: 3, y: -44}
+        - {x: 5, y: -47}
+        - {x: -4, y: -47}
+        - {x: -3, y: -47}
+      - - {x: -15, y: -25}
+        - {x: -14, y: -23}
+        - {x: -14, y: -19}
+        - {x: -14, y: -28}
+        - {x: -13, y: -27}
+      - - {x: 11, y: -23}
+        - {x: 11, y: -18}
+        - {x: 12, y: -17}
+        - {x: 12, y: -16}
+        - {x: 11, y: -17}
+        - {x: 11, y: -22}
+        - {x: 12, y: -23}
+        - {x: 11, y: -24}
+        - {x: 12, y: -24}
       tessellationDetail: 0
     - serializedVersion: 2
       name: attack
@@ -101,9 +128,31 @@ TextureImporter:
         width: 75
         height: 99
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
+      outline:
+      - - {x: 27.5, y: -48.5}
+        - {x: 28.5, y: -49.5}
+        - {x: 32.5, y: -49.5}
+        - {x: 32.5, y: -35.5}
+        - {x: 30.5, y: -33.5}
+        - {x: 27.5, y: -34.5}
+      - - {x: 35.5, y: 49.5}
+        - {x: -18.5, y: 49.5}
+        - {x: -37.5, y: 39.5}
+        - {x: -37.5, y: -30.5}
+        - {x: -32.5, y: -47.5}
+        - {x: 15.5, y: -47.5}
+        - {x: 15.5, y: -46.5}
+        - {x: 37.5, y: -4.5}
+        - {x: 37.5, y: 38.5}
+      - - {x: -17.5, y: 18.5}
+        - {x: -14.5, y: 21.5}
+        - {x: -15.5, y: 21.5}
+        - {x: -15.5, y: 18.5}
+        - {x: -14.5, y: 17.5}
+        - {x: -18.5, y: 14.5}
+        - {x: -17.5, y: 14.5}
       tessellationDetail: 0
     outline: []
   spritePackingTag: 
