@@ -69,7 +69,8 @@ public class BattleHandler : MonoBehaviour {
                 Debug.LogWarning("Tried to instantiate null enemy member at index: " + i);
             }
         }
-        battleMusic = enemies[0].battleMusic;
+        battleMusic.clip = enemies[0].battleMusic.clip;
+        battleMusic.volume = enemies[0].volume;
         battleMusic.Play();
         phase = 1;
     }
@@ -80,10 +81,18 @@ public class BattleHandler : MonoBehaviour {
         //Entry Phase
         if(phase == 1)
         {
-            partyMembers[activeMember].Select();
-            //  play player and enemies battle start animations if we ever get them
-            _uiHandler.SetMembers(partyMembers, enemies);
-            phase = 2;
+            
+            if (state.battledOnce)
+            {
+                partyMembers[activeMember].Select();
+                //  play player and enemies battle start animations if we ever get them
+                _uiHandler.SetMembers(partyMembers, enemies);
+                phase = 2;
+            }
+            else {
+                _uiHandler.Instrctions(true);
+            }
+            
         }
         //Player Phase
         else if(phase == 2)
@@ -117,7 +126,7 @@ public class BattleHandler : MonoBehaviour {
             {
                 if (!EnemiesAlive())
                 {
-                    
+                    Debug.Log("enemies still alve");
                     for (int i = 0; i < partyMembers.Length; i++)
                     {
                         state.SetPartyMemberHealth(i, partyMembers[i].Stats.Health);
@@ -160,7 +169,22 @@ public class BattleHandler : MonoBehaviour {
 
 
     public void PassInput(string input) {
-        _uiHandler.PassInput(input);
+        switch (phase)
+        {
+            case 1:
+                if (input == "Select")
+                {
+                    state.battledOnce = true;
+                    _uiHandler.Instrctions(false);
+                }
+                break;
+            case 2:
+                _uiHandler.PassInput(input);
+                break;
+            default:
+                break;
+        }
+        
     }
 
     //Returns active player object
@@ -296,9 +320,9 @@ public class BattleHandler : MonoBehaviour {
     }
     public bool EnemiesAlive()
     {
-        for (int i = 0; i < partyMembers.Length; i++)
-        {
-            if (enemies[0].Stats.IsAlive == true)
+        for (int i = 0; i < enemies.Length; i++)
+        {   
+            if (enemies[i].Stats.IsAlive == true)
             {
                 return true;
             }

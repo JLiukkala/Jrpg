@@ -92,7 +92,10 @@ public class ActionHandler : MonoBehaviour {
                 //record starting pos
                 pos = obj.Origin.transform.position;
                 //transform positions
-                obj.Origin.transform.position = obj.Target.transform.position - new Vector3(1.2f, .5f, 0);
+                if (obj.Origin.Name != obj.Target.Name)
+                {
+                    obj.Origin.transform.position = obj.Target.transform.position - new Vector3(1.2f, .5f, 0);
+                }
                 //subtract the mana cost
                 Debug.Log(obj.Origin.FindAbility(obj.Action));
                 Debug.Log(obj.Action);

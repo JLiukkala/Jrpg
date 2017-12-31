@@ -16,6 +16,7 @@ public class BattleEntity : MonoBehaviour {
     [SerializeField, Tooltip("Array of all abilities for this BattleEntity")]
     private AbilityObject[] _abilities;
     private BattleHandler battle;
+    public float volume = 1.0f;
     private void Start()
     {
         battle = (BattleHandler)GameObject.FindWithTag("Battle Handler").GetComponent(typeof(BattleHandler));

@@ -8,15 +8,16 @@ public class UISelectionObject : MonoBehaviour {
 
     public Text _name;
     public Text _health;
-
+    public int _selectionSize = 2;
+    public int normalSize = 16;
     public void Highlight()
     {
-        _name.fontStyle = FontStyle.Bold;
-        _health.fontStyle = FontStyle.Bold;
+        _name.fontSize = normalSize + _selectionSize;
+        _health.fontSize = normalSize + _selectionSize;
     }
     public void Normalize()
     {
-        _name.fontStyle = FontStyle.Normal;
-        _health.fontStyle = FontStyle.Normal;
+        _name.fontSize = normalSize;
+        _health.fontSize = normalSize;
     }
 }

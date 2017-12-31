@@ -29,7 +29,8 @@ public class UIHandler : MonoBehaviour {
     private int target;
     private string action;
 
-
+    public GameObject _instructions;
+    private GameObject instructions;
     private int currentSelection = 0;
     private MenuState currentState = MenuState.Empty;
     //Ability Screen
@@ -83,7 +84,7 @@ public class UIHandler : MonoBehaviour {
         InitializeStatusPlate();
         InitializeSkills();
         InitializeSelections();
-
+        InitializeInstructions();
     }
 
     private void InitializeNamePlate()
@@ -142,7 +143,14 @@ public class UIHandler : MonoBehaviour {
             Selections[i].gameObject.SetActive(false);
         }
     }
-
+    private void InitializeInstructions()
+    {
+        instructions = Instantiate(_instructions);
+        instructions.transform.parent = transform;
+        instructions.transform.localScale = new Vector3(1, 1, 1);
+        instructions.transform.localPosition = new Vector3(0, 0, 0);
+        instructions.gameObject.SetActive(false);
+    }
 
 
     public void TransformState(MenuState newState)
@@ -275,6 +283,12 @@ public class UIHandler : MonoBehaviour {
         float y = ((Camera.main.orthographicSize + pos.y) * gameObject.GetComponent<RectTransform>().rect.height) / (Camera.main.orthographicSize * 2);
         current.transform.position = new Vector2(x * scale, y * scale);
     }
+
+    public void Instrctions(bool show)
+    {
+        instructions.SetActive(show);
+    }
+
     public void SetMembers(PlayerEntity[] newMembers, EnemyEntity[] newEnemies)
     {
         partyMembers = newMembers;

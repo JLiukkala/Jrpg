@@ -19,7 +19,7 @@ public class StateHandler : MonoBehaviour {
 
     //Global Trackers
     private GameState currentState = GameState.MainMenu;
-    
+    public bool battledOnce;
 
 
     //Dungeon scene Variables
@@ -31,7 +31,7 @@ public class StateHandler : MonoBehaviour {
     public int mintime = 0;
     public int maxtime = 0;
     //Battle Scene Variables
-        //random encounter enemies
+    //random encounter enemies
     [SerializeField, Tooltip("Array of enemies")]
     private EnemyEntity[] _dungeonEnemies;
     [SerializeField, Tooltip("Array of enemies")]
@@ -55,25 +55,25 @@ public class StateHandler : MonoBehaviour {
 
     private void Start()
     {
-        for(int i = 0; i < PartyCount; i++)
+        for (int i = 0; i < PartyCount; i++)
         {
-            if(_partyMembers[i] == null)
+            if (_partyMembers[i] == null)
             {
                 Debug.LogWarning("StateHandler: Null Party Member at index " + i);
             }
         }
-        for(int i = 0; i < PartyCount; i++)
+        for (int i = 0; i < PartyCount; i++)
         {
-            if(_partyMembers[i] == null)
+            if (_partyMembers[i] == null)
             {
                 Debug.LogWarning("StateHandler: Null Party Member at index " + i);
             }
         }
-        if(_partyMembers.Length != _membersHealth.Length)
+        if (_partyMembers.Length != _membersHealth.Length)
         {
             Debug.LogWarning("StateHandler: Members Health length does not match Party Members length");
         }
-        if(_partyMembers.Length != _membersMana.Length)
+        if (_partyMembers.Length != _membersMana.Length)
         {
             Debug.LogWarning("StateHandler: Members Mana length does not match Party Members length");
         }
@@ -86,16 +86,16 @@ public class StateHandler : MonoBehaviour {
 
     private void Update()
     {
-        switch(currentState)
+        switch (currentState)
         {
             case GameState.MainMenu:
                 break;
             case GameState.Dungeon:
-                if(!(_partyPosition == player.transform.position))
+                if (!(_partyPosition == player.transform.position))
                 {
                     _partyPosition = player.transform.position;
                     walkTimer += Time.deltaTime;
-                    if(nextEncounter <= walkTimer)
+                    if (nextEncounter <= walkTimer)
                     {
                         ClearEnemies();
                         RollEnemies();
@@ -117,6 +117,16 @@ public class StateHandler : MonoBehaviour {
 
     public void ChangeState(GameState state)
     {
+        if (currentState == GameState.GameOver || currentState == GameState.Victory)
+        {
+            for (int i = 0; i < _membersHealth.Length; i++)
+            {
+                SetPartyMemberHealth(i, _partyMembers[i].Stats.Health);
+                SetPartyMemberMana(i, _partyMembers[i].Stats.Mana);
+            }
+            _partyPosition = new Vector3(0, 0, 0);
+            battledOnce = false;
+        }
         switch(state)
         {
             case GameState.MainMenu:
@@ -160,8 +170,10 @@ public class StateHandler : MonoBehaviour {
                 currentState = GameState.Battle;
                 break;
             case (int)GameState.GameOver:
+                currentState = GameState.GameOver;
                 break;
             case (int)GameState.Victory:
+                currentState = GameState.Victory;
                 break;
             default:
                 break;
@@ -186,8 +198,24 @@ public class StateHandler : MonoBehaviour {
                 battleHandler.PassInput(input);
                 break;
             case GameState.GameOver:
+                if (input == "Select")
+                {
+                    ChangeState(GameState.Dungeon);
+                }
+                else if (input == "Esc")
+                {
+                    Application.Quit();
+                }
                 break;
             case GameState.Victory:
+                if (input == "Select")
+                {
+                    ChangeState(GameState.Dungeon);
+                }
+                else if (input == "Esc")
+                {
+                    Application.Quit();
+                }
                 break;
             default:
                 break;
