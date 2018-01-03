@@ -23,6 +23,7 @@ public class BuffHolder : MonoBehaviour {
     void Start () {
         //Gives the length to allBuffs for the current lengths of buffs we have
         allBuffs = new Buff[prefabs.Length];
+        transform.localPosition = new Vector3(0,0,0);
         //For all of the serialized prefabs cycle through them
         for(int i = 0; i < prefabs.Length; i++)
         {
@@ -30,19 +31,38 @@ public class BuffHolder : MonoBehaviour {
             allBuffs[i] = Instantiate(prefabs[i]).GetComponent<Buff>();
             //make it a child of buffholder
             allBuffs[i].transform.parent = transform;
+
             //Depending on type and severity give it a position this can be done in a mathmatical way later but for now this was the fastest way to put it in
             switch(allBuffs[i].BuffType)
             {
                 case StatusOptions.ModifyAttack:
                     if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
                     {
-                        allBuffs[i].transform.localPosition = new Vector3(.2f, 0, 0);
+                        allBuffs[i].transform.localPosition = new Vector3(.2f, .2f, 0);
                     } else
                     {
-                        allBuffs[i].transform.localPosition = new Vector3(.4f, 0, 0);
+                        allBuffs[i].transform.localPosition = new Vector3(.4f, .2f, 0);
                     }
                     break;
                 case StatusOptions.ModifyDefense:
+                    if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
+                    {
+                        allBuffs[i].transform.localPosition = new Vector3(.2f, .1f, 0);
+                    } else
+                    {
+                        allBuffs[i].transform.localPosition = new Vector3(.4f, .1f, 0);
+                    }
+                    break;
+                case StatusOptions.ModifyIntelligence:
+                    if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
+                    {
+                        allBuffs[i].transform.localPosition = new Vector3(.2f, .0f, 0);
+                    } else
+                    {
+                        allBuffs[i].transform.localPosition = new Vector3(.4f, .0f, 0);
+                    }
+                    break;
+                case StatusOptions.ModifyMagicResist:
                     if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
                     {
                         allBuffs[i].transform.localPosition = new Vector3(.2f, -.1f, 0);
@@ -51,31 +71,13 @@ public class BuffHolder : MonoBehaviour {
                         allBuffs[i].transform.localPosition = new Vector3(.4f, -.1f, 0);
                     }
                     break;
-                case StatusOptions.ModifyIntelligence:
+                case StatusOptions.ModifySpeed:
                     if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
                     {
                         allBuffs[i].transform.localPosition = new Vector3(.2f, -.2f, 0);
                     } else
                     {
                         allBuffs[i].transform.localPosition = new Vector3(.4f, -.2f, 0);
-                    }
-                    break;
-                case StatusOptions.ModifyMagicResist:
-                    if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
-                    {
-                        allBuffs[i].transform.localPosition = new Vector3(.2f, -.4f, 0);
-                    } else
-                    {
-                        allBuffs[i].transform.localPosition = new Vector3(.4f, -.4f, 0);
-                    }
-                    break;
-                case StatusOptions.ModifySpeed:
-                    if(allBuffs[i].BuffSeverity == Severity.Up || allBuffs[i].BuffSeverity == Severity.DoubleUp)
-                    {
-                        allBuffs[i].transform.localPosition = new Vector3(.2f, -.3f, 0);
-                    } else
-                    {
-                        allBuffs[i].transform.localPosition = new Vector3(.4f, -.3f, 0);
                     }
                     break;
                 default:

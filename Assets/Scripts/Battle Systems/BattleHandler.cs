@@ -112,6 +112,7 @@ public class BattleHandler : MonoBehaviour {
                 _actionHandler.Push(enemies[i], enemies[i].Think(), partyMembers[enemies[i].Target(partyMembers.Length)]);
             }
             _uiHandler.Splash("Battle Phase!", new Vector3(0, 1.5f, 0));
+            _actionHandler.Sort();
             //sort actions
             phase = 4;
             //  call enemy action

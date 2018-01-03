@@ -30,10 +30,27 @@ public class ActionHandler : MonoBehaviour {
     //                                                                                                                             ////////////Change////////////
     public void Sort()
     {
-        //Find a way to sort the list
-        //actionList.Sort((x, y) => _battle.GetPlayer(x.Origin).Stats.Speed + _battle.GetPlayer(x.Origin).Abilities.AbilityList[_battle.GetPlayer(x.Origin).Abilities.SkillIndex(x.Action)].Speed -
-         //   _battle.GetPlayer(x.Origin).Stats.Speed + _battle.GetPlayer(x.Origin).Abilities.AbilityList[_battle.GetPlayer(x.Origin).Abilities.SkillIndex(x.Action)].Speed);
-        //sorts the stack of current actions based on speed
+        List<ActionObject> sorted = new List<ActionObject>();
+        for(int i = 0; i < actionList.Count; i++)
+        {
+            int speed =actionList[i].Origin.Stats.CurrentSpeed + actionList[i].Origin.FindAbility(actionList[i].Action).Speed;
+            for(int j = 0; j <= sorted.Count; j++)
+            {
+                if(sorted.Count == j)
+                {
+                    sorted.Add(actionList[i]);
+                    break;
+                }
+                int listedspeed = sorted[j].Origin.Stats.CurrentSpeed + sorted[j].Origin.FindAbility(sorted[j].Action).Speed;
+                if(speed < listedspeed)
+                {
+                    sorted.Insert(j, actionList[i]);
+                    break;
+                }
+                
+            }
+        }
+        actionList = sorted;
     }
 
     //returns the last item in the action stack and removes it

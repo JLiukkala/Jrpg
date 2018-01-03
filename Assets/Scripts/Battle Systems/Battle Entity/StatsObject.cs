@@ -51,7 +51,7 @@ public class StatsObject : MonoBehaviour {
     private BuffHolder _buffHolder;
     [SerializeField, Tooltip("GameObject to hold all the buff images")]
     private BattleEntity _battleEntity;
-    private const float DOUBLEVALUE = 1.5f;
+    private const float DOUBLEVALUE = .5f;
     public bool log = false;
 
     List<StatusObject> effects = new List<StatusObject>();
@@ -172,13 +172,14 @@ public class StatsObject : MonoBehaviour {
     //Returns severity of an effect based on DOUBLEVALUE, this can be misleading as it determines of the value not including margin calculation
     //If passed zero this will also return down as enums cant have null returns and im to lazy to put a safegaurd in
     public Severity DetermineSeverity(StatusObject effect) {
-        if(effect.ActualValue >= DOUBLEVALUE)
+
+        if(effect.ActualValue >= DOUBLEVALUE+1)
         {
             return Severity.DoubleUp;
-        } else if(effect.ActualValue >0)
+        } else if(effect.ActualValue >1)
         {
             return Severity.Up;
-        } else if(effect.ActualValue <= -DOUBLEVALUE)
+        } else if(effect.ActualValue <= -DOUBLEVALUE-1)
         {
             return Severity.DoubleDown;
         } else
